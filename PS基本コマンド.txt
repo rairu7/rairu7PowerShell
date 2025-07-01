@@ -1,0 +1,75 @@
+■■■単純な利用
+■ヘルプ
+help コマンド
+
+■検索
+Select-String 
+
+■ファイル一覧の取得
+
+■ファイル名取得
+(Get-ChildItem -Recurse).fullname
+
+■圧縮、展開
+Compress-Archive
+Expand-Archive
+
+■ファイル削除、コピー
+Remove-Item ファイル名
+Copy-Item "フルパス" -Destination "ディレクトリパス"
+
+■ファイル名変更
+Rename-Item
+
+■ファイル名変更　例
+Get-ChildItem *.txt
+Get-ChildItem *.txt | Rename-Item -NewName { $_.Name -replace '.txt','.log' }
+Get-ChildItem *.log
+
+■作成
+New-Item
+
+
+例：フォルダ作成
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap01" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap02" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap03" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap04" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap05" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap06" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap07" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap08" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap09" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap10" -ItemType "directory"
+New-Item -Path "C:\Users\person\Documents\develop\js\sample\trunk\jsbook_my"-Name "chap11" -ItemType "directory"
+
+
+■ファイル移動　例
+    # C:\Test フォルダ内のすべての .txt ファイルを C:\Backup に移動
+    Get-ChildItem "C:\Test\*.txt" | Move-Item -Destination "C:\Backup"
+
+■VBAだけだと面倒な作業
+    JSONやXMLのパース
+    APIのコール
+    レジストリ操作
+    画面キャプチャ
+
+■PowerShellなら簡単
+    ConvertFrom-Json でJSONをオブジェクトに変換
+    API取得
+    Get-ItemProperty でレジストリ操作
+    Add-Type -AssemblyName System.Windows.Forms でスクショ
+
+■■■高度なPowerShell
+#■仕様
+#ディレクトリ内を再帰的に検索し、ファイル名、行番号、列番号、行内容をtsv形式で出力する、ワンライナーPowerShell用プログラム。
+
+#■使い方
+#以下の4パラメーターを編集して、PowerShellにペースト。
+# $directory
+# $searchWord
+# $outputFile
+# $excludeExtensions
+#必要に応じて除外ファイルを excludeExtensions に記載。
+
+$directory = "検索対象ディレクトリ"; $searchWord = "TEL1"; $outputFile = "C:\Users\person\Documents\検索結果.txt"; if (Test-Path $outputFile) { Remove-Item $outputFile }; $excludeExtensions = @('jpg', 'mp4', 'gif', 'git'); Get-ChildItem -Path $directory -Recurse -File | ForEach-Object { $filePath = $_.FullName; $fileExtension = $_.Extension.TrimStart('.').ToLower(); if($excludeExtensions -contains $fileExtension) { return }; $lines = Get-Content $filePath; for ($lineNumber = 0; $lineNumber -lt $lines.Count; $lineNumber++) { $line = $lines[$lineNumber]; if ($line -match $searchWord){ $columnNumber = $line.IndexOf($searchWord) + 1; $line = $line -replace "`t", "    "; $output = "filePath't$fileExtension`t$($lineNumber + 1)`t$columnNumber't$line"; Add-Content -Path $outputFile -Value $output } } }
