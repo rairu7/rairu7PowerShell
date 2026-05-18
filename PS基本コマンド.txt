@@ -2,6 +2,11 @@
 ■ヘルプ
 help コマンド
 
+■テキスト正規化
+同フォルダの
+ normalize-pdftext.ps1
+を利用する
+
 ■検索
 Select-String 
 
